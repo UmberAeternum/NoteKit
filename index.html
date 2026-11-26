@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NoteKit — your notes, made useful</title>
+<meta name="theme-color" content="#100b1b">
+<meta name="description" content="Turn your notes into focused highlights, practice quizzes and revision plans with NoteKit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+ 
+:root{
+  color-scheme:dark;
+  --bg:#100b1b;
+  --bg-deep:#0b0812;
+  --surface:rgba(31,23,47,.70);
+  --surface-strong:rgba(39,29,59,.88);
+  --surface-soft:rgba(255,255,255,.045);
+  --ink:#f7f2ff;
+  --muted:#b5a9c8;
+  --muted-strong:#d1c6e0;
+  --line:rgba(220,202,255,.16);
+  --line-strong:rgba(220,202,255,.28);
+  --accent:#b99aff;
+  --accent-strong:#9871f4;
+  --accent-light:#e3d5ff;
+  --accent-wash:rgba(185,154,255,.13);
+  --hl:#e5d7ff;
+  --hlink:#26163f;
+  --ok:#8ce5bb;
+  --bad:#ff9daf;
+  --shadow:0 24px 70px rgba(4,2,12,.38);
+  --radius:22px;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:100px}
+body{
+  min-height:100vh;margin:0;overflow-x:hidden;position:relative;
+  background:
+    radial-gradient(ellipse at 12% 5%,rgba(128,79,190,.25),transparent 34%),
+    radial-gradient(ellipse at 92% 22%,rgba(97,69,164,.20),transparent 31%),
+    radial-gradient(ellipse at 55% 88%,rgba(78,48,122,.16),transparent 38%),
+    linear-gradient(145deg,#100b1b 0%,#130d20 48%,#0d0916 100%);
+  color:var(--ink);
+  font:400 16px/1.65 "DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+body::before,body::after{
+  content:"";position:fixed;z-index:-1;pointer-events:none;border-radius:50%;filter:blur(85px);opacity:.32;
+}
+body::before{width:340px;height:340px;left:-170px;top:34%;background:#7650b8}
+body::after{width:420px;height:420px;right:-230px;top:58%;background:#563e9a}
+a{color:var(--accent-light);text-decoration:none;transition:color .2s ease}
+a:hover{color:#fff}
+button,input,textarea{font:inherit}
+button{ -webkit-tap-highlight-color:transparent }
+.wrap{width:min(100% - 44px,1040px);margin:0 auto;padding:0 0 10px}
+.top{
+  position:sticky;top:12px;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:18px;
+  margin:12px 0 0;padding:12px 15px;border:1px solid var(--line);border-radius:18px;
+  background:rgba(19,13,30,.72);backdrop-filter:blur(22px) saturate(155%);-webkit-backdrop-filter:blur(22px) saturate(155%);
+  box-shadow:0 10px 34px rgba(0,0,0,.18);
+}
+.brand{display:inline-flex;align-items:center;gap:10px;color:var(--ink);font-weight:800;letter-spacing:-.04em;font-size:1.08rem}
+.brand:hover{color:#fff}
+.brand-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;color:#211333;font:800 1rem/1 "Bricolage Grotesque",sans-serif;
+  background:linear-gradient(145deg,#e5d8ff,#a77df5);box-shadow:0 5px 18px rgba(166,126,245,.32),inset 0 1px 0 rgba(255,255,255,.65)}
+.nav-links{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.nav-links a{padding:8px 12px;border:1px solid transparent;border-radius:11px;color:var(--muted-strong);font-size:.9rem}
+.nav-links a:hover{background:rgba(255,255,255,.06);border-color:var(--line);color:#fff}
+.hero{padding:74px 0 30px;max-width:780px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;padding:7px 12px;border:1px solid rgba(190,163,255,.24);border-radius:999px;background:rgba(149,111,215,.10);color:#d8c7ff;font-size:.78rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
+.eyebrow-dot{width:7px;height:7px;border-radius:50%;background:#c5a8ff;box-shadow:0 0 12px rgba(197,168,255,.95)}
+h1,h2,h3{font-family:"Bricolage Grotesque",Georgia,serif;line-height:1.08;letter-spacing:-.035em;margin:0}
+h1{max-width:760px;margin-top:22px;font-size:clamp(2.8rem,7.2vw,5.15rem);font-weight:800}
+h1 mark{padding:0 .13em .06em;border-radius:.16em;color:var(--accent-light);background:linear-gradient(105deg,rgba(144,104,214,.24),rgba(196,168,255,.13));box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.lead{max-width:60ch;margin:18px 0 28px;color:var(--muted);font-size:1.05rem;line-height:1.8}
+h2{margin:68px 0 18px;font-size:clamp(1.8rem,4vw,2.35rem);font-weight:700}
+.demo,.form,.plan,.stat{
+  border:1px solid var(--line);border-radius:var(--radius);
+  background:linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.025)),var(--surface);
+  backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%);
+  box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.10);
+}
+.demo{position:relative;overflow:hidden;padding:clamp(18px,3.4vw,30px)}
+.demo::before{content:"";position:absolute;inset:0 12% auto;height:1px;background:linear-gradient(90deg,transparent,rgba(226,210,255,.58),transparent);pointer-events:none}
+.tabs{display:flex;gap:8px;margin-bottom:18px;padding:5px;border:1px solid rgba(220,202,255,.10);border-radius:15px;background:rgba(9,6,16,.27);width:max-content;max-width:100%;flex-wrap:wrap}
+.tab{border:1px solid transparent;background:transparent;color:var(--muted-strong);padding:9px 16px;border-radius:11px;font-size:.93rem;font-weight:600;cursor:pointer;transition:all .2s ease}
+.tab:hover{background:rgba(255,255,255,.06);color:#fff}
+.tab[aria-selected="true"]{background:linear-gradient(135deg,#cbb5ff,#9874ed);color:#25183a;border-color:rgba(255,255,255,.28);box-shadow:0 5px 18px rgba(144,104,214,.28),inset 0 1px 0 rgba(255,255,255,.55)}
+textarea,input{width:100%;border:1px solid var(--line);border-radius:14px;padding:13px 15px;background:rgba(10,7,17,.38);color:var(--ink);font:inherit;outline:none;transition:border-color .2s ease,box-shadow .2s ease,background .2s ease}
+textarea{min-height:176px;resize:vertical;line-height:1.7}
+textarea::placeholder,input::placeholder{color:#827693}
+textarea:focus,input:focus{border-color:rgba(190,159,255,.76);background:rgba(12,8,22,.58);box-shadow:0 0 0 4px rgba(159,122,232,.13)}
+.row{display:flex;gap:12px;align-items:center;margin-top:13px;flex-wrap:wrap}
+.row input{width:100px}
+.row label,.form>label:not(.chk){color:var(--muted-strong);font-size:.9rem;font-weight:600}
+.go{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:45px;padding:11px 20px;border:1px solid rgba(255,255,255,.26);border-radius:13px;
+  background:linear-gradient(135deg,#d7c5ff 0%,#ad8df8 48%,#9370ed 100%);color:#241638;font-weight:800;cursor:pointer;
+  box-shadow:0 9px 22px rgba(116,79,187,.24),inset 0 1px 0 rgba(255,255,255,.7);transition:transform .18s ease,filter .18s ease,box-shadow .18s ease}
+.go:hover{transform:translateY(-2px);filter:brightness(1.07);box-shadow:0 13px 28px rgba(116,79,187,.34),inset 0 1px 0 rgba(255,255,255,.8)}
+.go:active{transform:translateY(0)}
+.go:disabled{opacity:.55;cursor:wait;transform:none}
+.ghost{padding:3px 0;border:0;background:none;color:#c8b5ef;text-decoration:none;font-size:.92rem;font-weight:600;cursor:pointer}
+.ghost:hover{color:#fff;text-decoration:underline;text-underline-offset:4px}
+:focus-visible{outline:3px solid #c7aaff;outline-offset:3px}
+#out{margin-top:20px;padding-top:2px;color:var(--muted-strong)}
+#out:empty{display:none}
+#out strong{color:var(--ink)}
+#out mark{padding:2px 5px;border-radius:5px;background:rgba(190,160,255,.25);color:#f1e8ff;box-shadow:inset 0 -1px 0 rgba(211,190,255,.35)}
+.sum{padding-left:22px}
+.sum li{margin:9px 0;padding-left:4px}
+.sum li::marker{color:var(--accent)}
+.q{padding:17px 0;border-top:1px solid var(--line)}
+.q p{color:var(--ink)}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.035);color:var(--muted-strong);font:inherit;cursor:pointer;transition:all .18s ease}
+.opt:hover{border-color:var(--line-strong);background:rgba(190,160,255,.09);color:#fff}
+.opt.right{border-color:rgba(140,229,187,.52);background:rgba(85,176,131,.10);color:var(--ok);font-weight:700}
+.opt.wrong{border-color:rgba(255,157,175,.52);background:rgba(205,91,119,.10);color:var(--bad)}
+.day{display:flex;gap:16px;align-items:flex-start;padding:13px 0;border-top:1px solid var(--line);color:var(--muted-strong)}
+.day b{min-width:72px;color:#d8c7ff}
+.note{display:block;color:var(--muted);font-size:.86rem;line-height:1.6;margin-top:10px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:18px 18px;border:1px solid transparent;border-bottom-color:var(--line);border-radius:14px;transition:background .2s ease,border-color .2s ease}
+.item:hover{border-color:var(--line);background:rgba(255,255,255,.035)}
+.item strong{color:var(--ink);font-size:1.02rem}
+.item p{margin:4px 0 0;color:var(--muted);font-size:.94rem}
+.item .tag{white-space:nowrap;padding:5px 10px;border:1px solid rgba(185,154,255,.18);border-radius:999px;background:rgba(185,154,255,.08);color:#d4c2fa;font-size:.76rem;font-weight:700;letter-spacing:.04em}
+.item:nth-child(-n+3) .tag{border-color:rgba(140,229,187,.18);background:rgba(140,229,187,.07);color:#a8e9c9}
+.proofgrid{display:grid;gap:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.stat{padding:22px;min-height:120px;color:var(--muted);font-size:.91rem}
+.stat b{display:block;margin-bottom:9px;color:#e4d6ff;font:800 clamp(2.2rem,5vw,3rem)/1 "Bricolage Grotesque",Georgia,serif;letter-spacing:-.05em}
+.quote{margin:14px 0;padding:14px 16px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 13px 13px 0;background:rgba(255,255,255,.035);color:var(--muted-strong)}
+.form{margin-top:14px;padding:20px}
+.form label.chk{display:flex;gap:10px;align-items:flex-start;margin:14px 0;color:var(--muted);font-size:.88rem;line-height:1.55}
+.form label.chk input{flex:0 0 auto;width:17px;height:17px;margin:3px 0 0;accent-color:#ad8df8}
+.form textarea{min-height:100px}
+.msg{min-height:1.4em;margin-top:10px;color:var(--muted);font-size:.9rem}
+.price{display:grid;gap:14px;grid-template-columns:1fr}
+.plan{position:relative;padding:22px;overflow:hidden}
+.plan.pro{border-color:rgba(192,164,255,.62);background:linear-gradient(150deg,rgba(154,116,222,.20),rgba(255,255,255,.045) 55%),var(--surface);box-shadow:0 22px 60px rgba(92,60,151,.22),inset 0 1px 0 rgba(255,255,255,.16)}
+.plan.pro::before{content:"PRO";position:absolute;top:18px;right:18px;padding:5px 9px;border:1px solid rgba(213,193,255,.24);border-radius:999px;background:rgba(183,148,255,.13);color:#e4d6ff;font-size:.65rem;font-weight:800;letter-spacing:.11em}
+.plan h3{margin:0;font-size:1.22rem;letter-spacing:-.02em}
+.plan .p{margin:12px 0 2px;color:#e7dcff;font:800 2.15rem/1.1 "Bricolage Grotesque",Georgia,serif;letter-spacing:-.04em}
+.plan ul{margin:15px 0 0;padding-left:19px;color:var(--muted);font-size:.92rem}
+.plan li{margin:7px 0}
+.plan.pro .go{width:100%;margin-top:14px}
+.plan input{margin-top:7px}
+.plan .note{margin-top:15px}
+.plan>button:not(.go){padding:9px 13px;border:1px solid var(--line-strong);border-radius:10px;background:rgba(255,255,255,.06);color:var(--accent-light);font-weight:700;cursor:pointer}
+.badge-pro{display:inline-block;margin-left:7px;padding:4px 9px;border:1px solid rgba(140,229,187,.24);border-radius:99px;background:rgba(140,229,187,.10);color:var(--ok);font:700 .72rem/1.2 "DM Sans",sans-serif;vertical-align:middle}
+.badge-pro[hidden]{display:none}
+details{padding:15px 2px;border-top:1px solid var(--line)}
+summary{color:var(--ink);font-weight:700;cursor:pointer;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"＋";float:right;color:var(--accent);font-weight:500}
+details[open] summary::after{content:"−"}
+details p,details li{color:var(--muted);font-size:.92rem}
+details ul{padding-left:20px}
+footer{margin:70px 0 34px;padding:20px 0;border-top:1px solid var(--line);color:#8e819f;font-size:.85rem}
+@media(min-width:720px){.price{grid-template-columns:repeat(3,minmax(0,1fr))}.plan{padding:24px}.hero{padding-top:88px}}
+@media(max-width:600px){
+  .wrap{width:min(100% - 28px,1040px)}
+  .top{top:7px;margin-top:7px;padding:9px 10px;border-radius:15px;gap:8px}
+  .brand{font-size:1rem}.brand-mark{width:31px;height:31px}
+  .nav-links{gap:2px}.nav-links a{padding:7px 8px;font-size:.78rem}
+  .hero{padding:58px 0 22px}h1{font-size:clamp(2.55rem,13vw,4rem)}
+  .lead{font-size:.98rem}
+  h2{margin-top:54px}
+  .demo{padding:15px;border-radius:19px}
+  .tabs{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+  .tab{padding:9px 5px;font-size:.82rem}
+  .proofgrid{gap:9px}.stat{padding:16px;min-height:108px}
+  .item{padding:15px 10px;gap:10px}.item p{font-size:.87rem}.item .tag{font-size:.68rem;padding:4px 8px}
+  .form{padding:16px}.plan{padding:19px}
+}
+@media(max-width:370px){.nav-links a{padding:6px;font-size:.72rem}.brand{gap:7px}.brand-mark{width:28px;height:28px}.proofgrid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:no-preference){#out{animation:rise .28s ease-out}@keyframes rise{from{opacity:0;transform:translateY(7px)}}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
+
+</style>
+</head>
+<body>
+<div class="wrap" id="top">
+<nav class="top" aria-label="Main navigation">
+  <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">N</span><span>NoteKit</span></a>
+  <div class="nav-links"><a href="#proof">Proof</a><a href="#pricing">Pricing</a><a href="#legal">Privacy &amp; terms</a></div>
+</nav>
+<header class="hero">
+  <div class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> Your personal study workspace</div>
+  <h1>Turn your notes into a <mark>study advantage</mark>.</h1>
+  <p class="lead">NoteKit pulls out the ideas that matter, turns them into quick practice, and maps your revision days. Start with the notes you already have.</p>
+</header>
+
+<div class="demo">
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-m="sum">Highlights</button>
+    <button class="tab" role="tab" aria-selected="false" data-m="quiz">Quiz</button>
+    <button class="tab" role="tab" aria-selected="false" data-m="plan">Study plan</button>
+  </div>
+  <div id="textMode">
+    <textarea id="notes" aria-label="Your notes" placeholder="Paste a few paragraphs of notes here…"></textarea>
+    <div class="row"><button class="ghost" id="sample" type="button">Use sample notes</button></div>
+  </div>
+  <div id="planMode" hidden>
+    <textarea id="topics" aria-label="Topics" placeholder="One topic per line or separated by commas, e.g. Arrays, Linked lists, Trees, Graphs"></textarea>
+    <div class="row"><label for="days">Days left</label><input id="days" type="number" min="2" max="60" value="7"></div>
+  </div>
+  <div class="row"><button class="go" id="run" type="button">Generate</button><span class="note" id="usage"></span></div>
+  <div id="out" aria-live="polite"></div>
+  <p class="note" id="mode-note">Demo mode: runs locally with simple text analysis. Connect your backend to enable AI generation and account features.</p>
+</div>
+
+<h2>What NoteKit does</h2>
+<div>
+  <div class="item"><div><strong>Highlights</strong><p>Finds the sentences that carry the most weight in your notes.</p></div><span class="tag">live</span></div>
+  <div class="item"><div><strong>Quiz</strong><p>Turns key sentences into fill-in-the-blank questions with options.</p></div><span class="tag">live</span></div>
+  <div class="item"><div><strong>Study plan</strong><p>Spreads your topics over the days you have, with a final revision day.</p></div><span class="tag">live</span></div>
+  <div class="item"><div><strong>Syllabus upload</strong><p>Drop in a PDF syllabus and get chapter-wise plans.</p></div><span class="tag">planned</span></div>
+</div>
+
+<h2 id="proof">Proof</h2>
+<p class="lead" style="margin-top:0">Only real numbers from our database and feedback we have reviewed. Nothing here is made up.</p>
+<div class="proofgrid">
+  <div class="stat"><b id="nUsers">–</b>people signed up</div>
+  <div class="stat"><b id="nKits">–</b>study kits made</div>
+</div>
+<div id="quotes" aria-live="polite"><p class="note">No reviewed feedback yet. Be the first to try it and tell us what you think.</p></div>
+<div class="form">
+  <strong>Share feedback</strong>
+  <textarea id="fbText" aria-label="Your feedback" style="min-height:80px;margin-top:8px" placeholder="What worked? What did not?"></textarea>
+  <div class="row"><label for="fbRate">Rating</label><input id="fbRate" type="number" min="1" max="5" value="5" style="width:70px"><button class="go" id="fbSend" type="button">Send feedback</button></div>
+  <div class="msg" id="fbMsg"></div>
+</div>
+
+<h2 id="signup">Get updates</h2>
+<div class="form" style="margin-top:0">
+  <label for="suEmail">Email</label>
+  <input id="suEmail" type="email" autocomplete="email" placeholder="you@college.edu">
+  <label class="chk"><input id="suConsent" type="checkbox"> I agree that NoteKit may store my email to send product updates. I can delete it any time.</label>
+  <button class="go" id="suSend" type="button">Sign up</button>
+  <div class="msg" id="suMsg"></div>
+</div>
+
+<h2 id="pricing">Pricing</h2>
+<div class="price">
+  <div class="plan"><h3>Free</h3><div class="p">₹0</div><ul><li>5 kits a day</li><li>All three tools</li></ul></div>
+  <div class="plan pro"><h3>Pro <span id="proBadge" class="badge-pro" hidden>Active</span></h3><div class="p">₹99/mo</div><ul><li>Unlimited kits</li><li>AI model answers</li><li>PDF and Anki export</li></ul>
+    <label for="payEmail" class="note">Email for your licence key</label>
+    <input id="payEmail" type="email" autocomplete="email" placeholder="you@college.edu">
+    <button class="go" id="payBtn" type="button">Pay ₹99 with Razorpay</button>
+    <div class="msg" id="payMsg" aria-live="polite"></div>
+    <label for="licIn" class="note">Already paid? Enter your licence key</label>
+    <input id="licIn" placeholder="NKT-…"><button id="licBtn" type="button" style="margin-top:6px">Activate</button>
+  </div>
+  <div class="plan"><h3>For coaching centers</h3><div class="p">Custom</div><ul><li>Your syllabus built in</li><li>Chat widget for your site</li></ul></div>
+</div>
+<p class="note">Prices are placeholders. Payments are handled by Razorpay, so we never see your card details.</p>
+
+<h2 id="legal">Privacy, terms and refunds</h2>
+<p class="note">Starter text. Replace the bracketed parts and have a lawyer review it before you take real payments.</p>
+<details><summary>Who we are</summary><p>NoteKit is run by [your full name], [city, state], India. Contact: [your email]. [Business registration details, once you have them.]</p></details>
+<details><summary>Privacy</summary><ul><li>We store only your email (if you sign up), feedback you send, and payment records.</li><li>Notes you paste into the demo are processed in your browser and are not stored.</li><li>We do not sell your data. Card details go to Razorpay, not to us.</li><li>You can delete your signup and feedback below at any time. Payment records are kept for tax and refund purposes.</li></ul></details>
+<details><summary>Terms</summary><ul><li>NoteKit gives study aids that can contain mistakes. Check important facts yourself.</li><li>Pro is billed per month. Your licence key is for your own use and must not be shared.</li><li>We may change features or prices with notice on this page.</li></ul></details>
+<details><summary>Refunds</summary><p>If Pro does not work for you, write to [your email] within 7 days of payment with your payment id and we will refund it. [Adjust this to what you can honestly offer.]</p></details>
+<details><summary>Delete my data</summary>
+  <label for="delEmail" class="note">Email to delete</label><input id="delEmail" type="email" placeholder="you@college.edu">
+  <button id="delBtn" type="button" style="margin-top:8px">Delete my data</button><div class="msg" id="delMsg"></div></details>
+
+<footer><strong style="color:#d8c7ff">NoteKit</strong> · a student project · [your email]</footer>
+</div>
+
+<script>
+
+const SAMPLE = "Photosynthesis is the process by which plants convert light energy into chemical energy. It takes place in the chloroplasts, which contain the pigment chlorophyll. Chlorophyll absorbs mostly red and blue light and reflects green light, which is why leaves look green. The light reactions occur in the thylakoid membranes and produce ATP and NADPH. The Calvin cycle occurs in the stroma and uses ATP and NADPH to fix carbon dioxide into glucose. Oxygen is released as a by-product when water molecules are split during the light reactions. Factors such as light intensity, carbon dioxide concentration and temperature affect the rate of photosynthesis.";
+const STOP = new Set("this that with from which their there these those have been were will would could should about into also than then when what where while such other more most some many each both only over under after before because they them being does doing very just like used uses using".split(" "));
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let mode = "sum";
+
+const sentences = t => (t.replace(/\s+/g, " ").match(/[^.!?]+[.!?]*/g) || []).map(s => s.trim()).filter(s => s.length > 25);
+const words = s => (s.toLowerCase().match(/[a-z][a-z-]{3,}/g) || []).filter(w => !STOP.has(w));
+function analyse(text){
+  const ss = sentences(text), freq = {};
+  ss.forEach(s => words(s).forEach(w => freq[w] = (freq[w] || 0) + 1));
+  const scored = ss.map((s, i) => { const w = words(s); return {s, i, score: w.reduce((a, x) => a + freq[x], 0) / Math.sqrt(w.length || 1)}; });
+  return {ss, freq, scored};
+}
+const topN = (scored, n) => scored.slice().sort((a, b) => b.score - a.score).slice(0, n).sort((a, b) => a.i - b.i);
+
+function summary(text){
+  const {ss, scored} = analyse(text);
+  if (ss.length < 2) return "<p>Add a few more sentences so there is something to highlight.</p>";
+  const top = topN(scored, Math.min(3, Math.ceil(ss.length / 3)));
+  const set = new Set(top.map(t => t.s));
+  const marked = ss.map(s => set.has(s) ? "<mark>" + esc(s) + "</mark>" : esc(s)).join(" ");
+  return "<strong>Key points</strong><ul class='sum'>" + top.map(t => "<li>" + esc(t.s) + "</li>").join("") + "</ul><p>" + marked + "</p>";
+}
+
+function quiz(text){
+  const {ss, freq, scored} = analyse(text);
+  const pool = Object.keys(freq).filter(w => w.length > 5);
+  if (ss.length < 3 || pool.length < 4) return "<p>Paste a longer passage (at least three sentences) to build a quiz.</p>";
+  const top = topN(scored, Math.min(4, ss.length));
+  let html = "";
+  top.forEach((t, n) => {
+    const cands = words(t.s).filter(w => w.length > 5).sort((a, b) => (freq[b] * b.length) - (freq[a] * a.length));
+    const ans = cands[0]; if (!ans) return;
+    const re = new RegExp("\\b" + ans + "\\b", "i");
+    const stem = esc(t.s.replace(re, "_____"));
+    const opts = [ans];
+    pool.slice().sort(() => Math.random() - .5).forEach(w => { if (opts.length < 4 && !opts.includes(w)) opts.push(w); });
+    opts.sort(() => Math.random() - .5);
+    html += "<div class='q' data-a='" + ans + "'><p><strong>Q" + (n + 1) + ".</strong> " + stem + "</p>" +
+      opts.map(o => "<button class='opt' type='button' data-o='" + o + "'>" + o + "</button>").join("") + "</div>";
+  });
+  return html || "<p>Could not build questions from this text. Try longer notes.</p>";
+}
+
+function plan(topicsRaw, days){
+  const topics = topicsRaw.split(/[\n,;]+/).map(s => s.trim()).filter(Boolean);
+  if (!topics.length) return "<p>Add at least one topic.</p>";
+  days = Math.max(2, Math.min(60, days || 7));
+  const study = days - 1, per = Math.ceil(topics.length / study);
+  let html = "";
+  for (let d = 0; d < study; d++){
+    const part = topics.slice(d * per, (d + 1) * per);
+    if (part.length) html += "<div class='day'><b>Day " + (d + 1) + "</b><span>" + part.map(esc).join(", ") + "</span></div>";
+  }
+  html += "<div class='day'><b>Day " + days + "</b><span>Revise everything. Re-take the quiz on your weakest topics.</span></div>";
+  return html;
+}
+
+
+const local = text => mode === "sum" ? summary(text) : mode === "quiz" ? quiz(text) : plan(text, parseInt($("days").value, 10));
+const cid = (() => { try { let c = localStorage.getItem("hilCid"); if (!c) { c = crypto.randomUUID(); localStorage.setItem("hilCid", c); } return c; } catch(e) { return crypto.randomUUID(); } })();
+const lic = () => { try { return localStorage.getItem("hilLic") || ""; } catch(e) { return ""; } };
+async function refreshUsage(){
+  if (!API_URL) return;
+  try { const d = await call("/usage", {client_id: cid, license: lic()}); $("usage").textContent = d.plan === "pro" ? "Pro: unlimited" : Math.max(0, d.limit - d.used) + " of " + d.limit + " free kits left today"; } catch(e) {}
+}
+async function run(){
+  const out = $("out");
+  const text = mode === "plan" ? $("topics").value : $("notes").value;
+  if (!text.trim()){ out.innerHTML = "<p>" + (mode === "plan" ? "Add your topics first." : "Paste some notes first, or tap “Use sample notes”.") + "</p>"; return; }
+  if (!API_URL){ out.innerHTML = local(text); return; }
+  out.textContent = "Working…"; $("run").disabled = true;
+  try {
+    const d = await call("/generate", {task: mode === "sum" ? "summarize" : mode, text, days: parseInt($("days").value, 10), client_id: cid, license: lic()});
+    out.innerHTML = "<p>" + esc(d.result).replace(/\n/g, "<br>") + "</p>";
+  } catch(e){
+    out.innerHTML = e.upgrade ? "<p>" + esc(e.message) + " <a href='#pricing'>See Pro</a></p>"
+      : "<p>" + esc(e.message) + " Here is the basic local result instead.</p>" + local(text);
+  } finally { $("run").disabled = false; refreshUsage(); }
+}
+
+document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => {
+  mode = b.dataset.m;
+  document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x === b));
+  $("textMode").hidden = mode === "plan"; $("planMode").hidden = mode !== "plan";
+  $("out").innerHTML = "";
+}));
+$("sample").addEventListener("click", () => { $("notes").value = SAMPLE; });
+$("run").addEventListener("click", run);
+$("out").addEventListener("click", e => {
+  const b = e.target.closest(".opt"); if (!b) return;
+  const q = b.closest(".q"); if (q.dataset.done) return; q.dataset.done = 1;
+  q.querySelectorAll(".opt").forEach(o => { if (o.dataset.o === q.dataset.a) o.classList.add("right"); else if (o === b) o.classList.add("wrong"); });
+});
+
+// ---------- Company layer: database, proof, payment ----------
+const API_URL = "";   // your deployed backend Worker, e.g. https://notekit-backend.yourname.workers.dev
+async function call(path, body){
+  if (!API_URL) throw new Error("Demo mode: set API_URL to your backend to enable this.");
+  const r = await fetch(API_URL.replace(/\/$/, "") + path, body ? {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)} : undefined);
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) { const er = new Error(d.error || "Request failed"); er.upgrade = !!d.upgrade; throw er; }
+  return d;
+}
+const msg = (id, t, bad) => { const e = $(id); e.textContent = t; e.style.color = bad ? "var(--bad)" : "var(--muted)"; };
+async function loadProof(){
+  try {
+    const d = await call("/proof");
+    $("nUsers").textContent = d.users; $("nKits").textContent = d.kits;
+    if (d.feedback.length) $("quotes").innerHTML = d.feedback.map(f => "<div class='quote'><div>" + esc(f.text) + "</div><div class='note'>" + "★".repeat(f.rating) + "</div></div>").join("");
+  } catch(e) { /* demo mode or offline: keep the dashes */ }
+}
+$("suSend").onclick = async () => { try { await call("/signup", {email: $("suEmail").value.trim(), consent: $("suConsent").checked}); msg("suMsg", "You are signed up. Thank you."); } catch(e){ msg("suMsg", e.message, true); } };
+$("fbSend").onclick = async () => { try { const d = await call("/feedback", {text: $("fbText").value, rating: +$("fbRate").value, email: $("suEmail").value.trim()}); msg("fbMsg", d.note); $("fbText").value = ""; } catch(e){ msg("fbMsg", e.message, true); } };
+$("delBtn").onclick = async () => { try { const d = await call("/forget", {email: $("delEmail").value.trim()}); msg("delMsg", d.note); } catch(e){ msg("delMsg", e.message, true); } };
+
+function setPro(on){ $("proBadge").hidden = !on; refreshUsage(); }
+try { if (localStorage.getItem("hilLic")) call("/verify-license", {license: localStorage.getItem("hilLic")}).then(d => setPro(d.valid)).catch(() => {}); } catch(e) {}
+$("licBtn").onclick = async () => {
+  try { const lic = $("licIn").value.trim(); const d = await call("/verify-license", {license: lic});
+    if (!d.valid) return msg("payMsg", "That key was not found.", true);
+    try { localStorage.setItem("hilLic", lic); } catch(e) {} setPro(true); msg("payMsg", "Pro is active."); } catch(e){ msg("payMsg", e.message, true); }
+};
+function loadScript(src){ return new Promise((ok, no) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = () => no(new Error("Could not load the payment window.")); document.head.appendChild(s); }); }
+$("payBtn").onclick = async () => {
+  const email = $("payEmail").value.trim();
+  try {
+    msg("payMsg", "Opening payment…");
+    const o = await call("/order", {email});
+    await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+    new Razorpay({ key: o.key_id, amount: o.amount, currency: "INR", order_id: o.order_id, name: "NoteKit", description: "Pro, 1 month", prefill: {email},
+      handler: async () => {   // payment done; wait for the server webhook to confirm and issue the key
+        msg("payMsg", "Payment received. Confirming…");
+        for (let i = 0; i < 20; i++) {
+          const s = await call("/order-status?id=" + encodeURIComponent(o.order_id) + "&email=" + encodeURIComponent(email)).catch(() => null);
+          if (s && s.status === "paid") { try { localStorage.setItem("hilLic", s.license); } catch(e) {} setPro(true); return msg("payMsg", "Paid. Your licence key (save it): " + s.license); }
+          await new Promise(r => setTimeout(r, 3000));
+        }
+        msg("payMsg", "Still confirming. Your key will be available shortly; write to us with your payment id if it does not appear.", true);
+      } }).open();
+  } catch(e){ msg("payMsg", e.message, true); }
+};
+loadProof(); refreshUsage();
+</script>
+</body>
+</html>
