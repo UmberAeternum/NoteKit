@@ -249,29 +249,32 @@ footer{margin:70px 0 34px;padding:20px 0;border-top:1px solid var(--line);color:
 <h2 id="pricing">Pricing</h2>
 <div class="price">
   <div class="plan"><h3>Free</h3><div class="p">₹0</div><ul><li>5 kits a day</li><li>All three tools</li></ul></div>
-  <div class="plan pro"><h3>Pro <span id="proBadge" class="badge-pro" hidden>Active</span></h3><div class="p">₹99/mo</div><ul><li>Unlimited kits</li><li>AI model answers</li><li>PDF and Anki export</li></ul>
-    <label for="payEmail" class="note">Email for your licence key</label>
-    <input id="payEmail" type="email" autocomplete="email" placeholder="you@college.edu">
-    <button class="go" id="payBtn" type="button">Pay ₹99 with Razorpay</button>
-    <div class="msg" id="payMsg" aria-live="polite"></div>
-    <label for="licIn" class="note">Already paid? Enter your licence key</label>
-    <input id="licIn" placeholder="NKT-…"><button id="licBtn" type="button" style="margin-top:6px">Activate</button>
+  <div class="plan pro"><h3>Pro <span id="proBadge" class="badge-pro" hidden>Active</span></h3><div class="p">₹99/mo</div><ul><li>Unlimited kits</li></ul>
+    <div hidden>
+      <label for="payEmail" class="note">Email for your licence key</label>
+      <input id="payEmail" type="email" autocomplete="email" placeholder="you@college.edu">
+      <button class="go" id="payBtn" type="button">Pay ₹99 with Razorpay</button>
+      <div class="msg" id="payMsg" aria-live="polite"></div>
+      <label for="licIn" class="note">Already paid? Enter your licence key</label>
+      <input id="licIn" placeholder="NKT-…"><button id="licBtn" type="button" style="margin-top:6px">Activate</button>
+    </div>
+    <p class="note" style="margin-top:8px"><strong>Pro is coming soon.</strong> Payments are not live yet. For early access or questions, write to gpremtejreddy@gmail.com.</p>
   </div>
   <div class="plan"><h3>For coaching centers</h3><div class="p">Custom</div><ul><li>Your syllabus built in</li><li>Chat widget for your site</li></ul></div>
 </div>
-<p class="note">Prices are placeholders. Payments are handled by Razorpay, so we never see your card details.</p>
+<p class="note">Pro is not on sale yet. When it opens, payments are handled by Razorpay, so we never see your card details.</p>
 
 <h2 id="legal">Privacy, terms and refunds</h2>
-<p class="note">Starter text. Replace the bracketed parts and have a lawyer review it before you take real payments.</p>
-<details><summary>Who we are</summary><p>NoteKit is run by [your full name], [city, state], India. Contact: [your email]. [Business registration details, once you have them.]</p></details>
+<p class="note">Questions about anything below? Write to gpremtejreddy@gmail.com.</p>
+<details><summary>Who we are</summary><p>NoteKit is run by Premtej Reddy Gade, Andhra Pradesh, India. Contact: gpremtejreddy@gmail.com.</p></details>
 <details><summary>Privacy</summary><ul><li>We store only your email (if you sign up), feedback you send, and payment records.</li><li>Notes you paste into the demo are processed in your browser and are not stored.</li><li>We do not sell your data. Card details go to Razorpay, not to us.</li><li>You can delete your signup and feedback below at any time. Payment records are kept for tax and refund purposes.</li></ul></details>
 <details><summary>Terms</summary><ul><li>NoteKit gives study aids that can contain mistakes. Check important facts yourself.</li><li>Pro is billed per month. Your licence key is for your own use and must not be shared.</li><li>We may change features or prices with notice on this page.</li></ul></details>
-<details><summary>Refunds</summary><p>If Pro does not work for you, write to [your email] within 7 days of payment with your payment id and we will refund it. [Adjust this to what you can honestly offer.]</p></details>
+<details><summary>Refunds</summary><p>If Pro does not work for you, write to gpremtejreddy@gmail.com within 7 days of payment with your payment id and we will refund it.</p></details>
 <details><summary>Delete my data</summary>
   <label for="delEmail" class="note">Email to delete</label><input id="delEmail" type="email" placeholder="you@college.edu">
   <button id="delBtn" type="button" style="margin-top:8px">Delete my data</button><div class="msg" id="delMsg"></div></details>
 
-<footer><strong style="color:#d8c7ff">NoteKit</strong> · a student project · [your email]</footer>
+<footer><strong style="color:#d8c7ff">NoteKit</strong> · a student project · gpremtejreddy@gmail.com</footer>
 </div>
 
 <script>
@@ -375,7 +378,7 @@ $("out").addEventListener("click", e => {
 // ---------- Company layer: database, proof, payment ----------
 const API_URL = "";   // your deployed backend Worker, e.g. https://notekit-backend.yourname.workers.dev
 async function call(path, body){
-  if (!API_URL) throw new Error("Demo mode: set API_URL to your backend to enable this.");
+  if (!API_URL) throw new Error("This part is not live yet. Write to gpremtejreddy@gmail.com and we will help you.");
   const r = await fetch(API_URL.replace(/\/$/, "") + path, body ? {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)} : undefined);
   const d = await r.json().catch(() => ({}));
   if (!r.ok) { const er = new Error(d.error || "Request failed"); er.upgrade = !!d.upgrade; throw er; }
